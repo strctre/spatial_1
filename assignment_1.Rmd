@@ -28,3 +28,32 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+test <- st_read("TRANS_SubwayStations.shp.zip")
+test2 <- st_read("MBTA_ridership_red.csv")%>%
+  mutate(STATION = toupper(stop_name))
+
+MBTA_ridership_redAM <- st_as_sf(left_join(test2, test, by = "STATION"))%>%
+  filter(time_period_name == "AM_PEAK")
+```
+
+
+```{r}
+boundary <- st_read("BOUNDARY_CityBoundary.shp.zip")
+
+```
+
+```{r}
+ggplot(MBTA_ridership_red_AMPeak)+
+  annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight")+
+  geom_sf(aes(size = average_flow,
+              color = stop_name),
+          alpha = 0.25)+
+  labs(caption = "Map tiles and data by OpenStreetMap")+
+  geom_sf(data = boundary,
+          color = "red",
+          size = 1,
+          fill = NA)
+  
+```
+
