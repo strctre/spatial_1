@@ -105,13 +105,67 @@ library(ggthemes)
 library(tidyverse)
 library(ggspatial)
 library(sf)
+
 ```
+
+
 ```{r}
 ggplot(MBTA_ridership_red_3)+
-  geom_point(aes(x = time_period_name, y = stop_name, color = day_type_name, size = average_flow), alpha = 0.25)
+  geom_point(aes(x = time_period_name, y = stop_name, color = day_type_name, size = average_flow), alpha = 0.25)+
+  scale_x_discrete(name = "Time period", labels = c("AM\npeak",
+                                                      "Time 1",
+                                                      "Time 2",
+                                                      "Time 3", 
+                                                      "Time 4",
+                                                      "Time 5",
+                                                      "Time 6",
+                                                      "Time 7",
+                                                      "Time 8",
+                                                      "Time 9"))+
+  scale_size_continuous(breaks = c(0,100,300,50000))
 
+#for legend
+  
+#scale_color_manual(name = , labels = )
+#create buffers or just the city limit
 ```
 
 ```{r}
-library(spData)
+ggplot(ridership)+
+  geom_point(aes(x = time_period_name, y = stop_name, color = day_type_name, size = average_flow), alpha = 0.25)
+```
+```{r}
+library(st)
+```
+
+```{r}
+test <- st_read("TRANS_SubwayStations.shp.zip")
+test2 <- st_read("MBTA_ridership_red.csv")%>%
+  mutate(STATION = toupper(stop_name)) %>%
+  filter(direction_id == "0" )
+
+MBTA_ridership_redAM <- st_as_sf(left_join(test2, test, by = "STATION"))%>%
+  filter(time_period_name == "AM_PEAK")
+
+#group or summarize function to create new column 
+ 
+
+save(MBTA_ridership_red, file = "MBTA_ridership_red.RData")
+```
+
+
+```{r}
+MBTA_ridership_red_AMPeak <- MBTA_ridership_red %>%
+  filter(time_period_name == "AM_PEAK")
+
+typeof(MBTA_ridership_red_AMPeak$average_flow)
+
+MBTA_ridership_red_AMPeak$average_flow <-
+  as.numeric(as.character(MBTA_ridership_red_AMPeak$average_flow))
+```
+
+```{r}
+ggplot(MBTA_ridership_red_AMPeak)+
+  geom_sf(aes(size = average_flow, color = stop_name))
+
 ```
