@@ -26,3 +26,92 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+library(sf)
+library(tidyverse)
+library(ggthemes)
+library(ggspatial)
+library(ggplot)
+```{r}
+library(sf)
+library(tidyverse)
+library(ggthemes)
+library(ggspatial)
+```
+
+
+```{r broadway bicycle}
+ggplot(Eco.Totem_Broadway_Bicycle_Count,aes(Time,Total))+
+  geom_
+```
+
+
+```{r}
+station <- st_read("TRANS_SubwayStations.shp.zip")
+```
+```{r}
+station_map <- ggplot(station)+ 
+  annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight") +
+  geom_sf(shape = 19, color = "red" , size = 3) +
+  labs(caption = "Map tiles and data by OpenStreetMap")
+  
+
+station_map
+
+```
+
+
+
+
+```{r}
+ridership <- st_as_sf(MBTA_ridership_red_3, coords = c("easting", "northing"), 
+    crs = 4269, agr = "constant")
+## Simple feature collection with 132 features and 0 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: 752981.6 ymin: 2956937 xmax: 772954.5 ymax: 2969832
+## epsg (SRID):    4269
+## proj4string:    +proj=longlat +datum=NAD83+no_defs
+##                     geometry
+
+```
+
+
+```{r}
+ridership_plot <- ggplot(MBTA_ridership_red_3)+
+  geom_sf(aes(size = average_flow, color = time_period_name), alpha = 0.5)
+```
+
+
+```{r}
+library("ggplot2")
+theme_set(theme_bw())
+```
+
+```{r}
+library("rnaturalearth")
+library("rnaturalearthdata")
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+
+## [1] "sf"  
+## [1] "data.frame"
+```
+
+
+```{r}
+library(ggthemes)
+library(tidyverse)
+library(ggspatial)
+library(sf)
+```
+```{r}
+ggplot(MBTA_ridership_red_3)+
+  geom_point(aes(x = time_period_name, y = stop_name, color = day_type_name, size = average_flow), alpha = 0.25)
+
+```
+
+```{r}
+library(spData)
+```
