@@ -1,5 +1,7 @@
 ---
-title: "spatial 1"
+title: "spatial_1"
+author: '17'
+date: "9/7/2021"
 output: html_document
 ---
 
@@ -7,165 +9,32 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-library(sf)
-library(tidyverse)
-library(ggthemes)
-library(ggspatial)
-library(ggplot)
-```{r}
-library(sf)
-library(tidyverse)
-library(ggthemes)
-library(ggspatial)
-```
-
-
-```{r broadway bicycle}
-ggplot(Eco.Totem_Broadway_Bicycle_Count,aes(Time,Total))+
-  geom_
-```
-
-
-```{r}
-station <- st_read("TRANS_SubwayStations.shp.zip")
-```
-```{r}
-station_map <- ggplot(station)+ 
-  annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight") +
-  geom_sf(shape = 19, color = "red" , size = 3) +
-  labs(caption = "Map tiles and data by OpenStreetMap")
-  
-
-station_map
-
-```
-
-
-
-
-```{r}
-ridership <- st_as_sf(MBTA_ridership_red_3, coords = c("easting", "northing"), 
-    crs = 4269, agr = "constant")
-## Simple feature collection with 132 features and 0 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: 752981.6 ymin: 2956937 xmax: 772954.5 ymax: 2969832
-## epsg (SRID):    4269
-## proj4string:    +proj=longlat +datum=NAD83+no_defs
-##                     geometry
-
-```
-
-
-```{r}
-ridership_plot <- ggplot(MBTA_ridership_red_3)+
-  geom_sf(aes(size = average_flow, color = time_period_name), alpha = 0.5)
-```
-
-
-```{r}
-library("ggplot2")
-theme_set(theme_bw())
-```
-
-```{r}
-library("rnaturalearth")
-library("rnaturalearthdata")
-
-world <- ne_countries(scale = "medium", returnclass = "sf")
-class(world)
-
-## [1] "sf"  
-## [1] "data.frame"
-```
-
-
-```{r}
-library(ggthemes)
-library(tidyverse)
-library(ggspatial)
-library(sf)
-
-```
-
-
-```{r}
-ggplot(MBTA_ridership_red_3)+
-  geom_point(aes(x = time_period_name, y = stop_name, color = day_type_name, size = average_flow), alpha = 0.25)+
-  scale_x_discrete(name = "Time period", labels = c("AM\npeak",
-                                                      "Time 1",
-                                                      "Time 2",
-                                                      "Time 3", 
-                                                      "Time 4",
-                                                      "Time 5",
-                                                      "Time 6",
-                                                      "Time 7",
-                                                      "Time 8",
-                                                      "Time 9"))+
-  scale_size_continuous(breaks = c(0,100,300,50000))
-
-#for legend
-  
-#scale_color_manual(name = , labels = )
-#create buffers or just the city limit
-```
-
-```{r}
-ggplot(ridership)+
-  geom_point(aes(x = time_period_name, y = stop_name, color = day_type_name, size = average_flow), alpha = 0.25)
-```
-```{r}
-library(st)
-```
-
 ```{r}
 test <- st_read("TRANS_SubwayStations.shp.zip")
 test2 <- st_read("MBTA_ridership_red.csv")%>%
-  mutate(STATION = toupper(stop_name)) %>%
-  filter(direction_id == "0" )
+  mutate(STATION = toupper(stop_name))
 
 MBTA_ridership_redAM <- st_as_sf(left_join(test2, test, by = "STATION"))%>%
   filter(time_period_name == "AM_PEAK")
-
-#group or summarize function to create new column 
- 
-
-save(MBTA_ridership_red, file = "MBTA_ridership_red.RData")
 ```
 
 
 ```{r}
-MBTA_ridership_red_AMPeak <- MBTA_ridership_red %>%
-  filter(time_period_name == "AM_PEAK")
+boundary <- st_read("BOUNDARY_CityBoundary.shp.zip")
 
-typeof(MBTA_ridership_red_AMPeak$average_flow)
-
-MBTA_ridership_red_AMPeak$average_flow <-
-  as.numeric(as.character(MBTA_ridership_red_AMPeak$average_flow))
 ```
 
 ```{r}
 ggplot(MBTA_ridership_red_AMPeak)+
-  geom_sf(aes(size = average_flow, color = stop_name))
-
+  annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight")+
+  geom_sf(aes(size = average_flow,
+              color = stop_name),
+          alpha = 0.25)+
+  labs(caption = "Map tiles and data by OpenStreetMap")+
+  geom_sf(data = boundary,
+          color = "red",
+          size = 1,
+          fill = NA)
+  
 ```
+
